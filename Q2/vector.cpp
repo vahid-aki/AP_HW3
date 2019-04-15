@@ -1,4 +1,5 @@
 #include"vector.h"
+#include <exception>
 
 Vector::Vector() {
   pa = new int[1];
@@ -20,24 +21,19 @@ Vector::Vector(Vector&& vector) : capacity{vector.capacity}, nextIndex{vector.ne
 }
 
 Vector Vector::operator+(const Vector& vector) const {
-  if(vector.nextIndex == this->nextIndex) {
+    if(vector.nextIndex != this->nextIndex)
+      throw std::out_of_range{"size of two vector's that you entered are not equel"};
     Vector copy{*this};
     for(int i{}; i < nextIndex; i++)
       copy.pa[i] += vector.pa[i];
     return copy;
-  }
-  else
-    std::cout << "size of two vector's that you entered are not equel" << std::endl;
 }
-
 Vector& Vector::operator+=(const Vector& vector) {
-  if(vector.nextIndex == this->nextIndex) {
-    for(int i{}; i < nextIndex; i++)
-      pa[i] += vector.pa[i];
-    return *this;
-  }
-  else
-    std::cout << "size of two vector's that you entered are not equel" << std::endl;
+  if(vector.nextIndex != this->nextIndex)
+    throw std::out_of_range{"size of two vector's that you entered are not equel"};
+  for(int i{}; i < nextIndex; i++)
+    pa[i] += vector.pa[i];
+  return *this;
 }
 
 Vector& Vector::operator=(const Vector& vector) {
@@ -61,20 +57,16 @@ Vector& Vector::operator=(Vector&& vector) {
 }
 
 int Vector::operator*(const Vector& vector) const {
-   int mul{};
-  
-  if(vector.nextIndex == this->nextIndex)
-    {
-      for(int i{}; i < nextIndex; i++) 
-	mul = mul + (this->pa[i] * vector.pa[i]);
-      return mul;
-    }
-  else
-    std::cout << "size of two vector's that you entered are not equel" << std::endl;    
+  if(vector.nextIndex != this->nextIndex)
+    throw std::out_of_range{"size of two vector's that you entered are not equel"};
+  int mul{};
+  for(int i{}; i < nextIndex; i++) 
+    mul = mul + (this->pa[i] * vector.pa[i]);
+  return mul;
 }
 
 int& Vector::operator[](int index) {
-    if (index >= capacity) { // is element in the array?
+  if (index >= capacity) { // is element in the array?
     for(int i{1}; i < index;)
       {
 	i *=2;
@@ -103,7 +95,7 @@ void Vector::push_back(int val) {
     pnewa = new int[capacity];
     for (int i = 0; i < nextIndex; i++)
       pnewa[i] = pa[i];
-   for (int j = nextIndex; j < capacity; j++)
+    for (int j = nextIndex; j < capacity; j++)
       pnewa[j] = 0;
     delete [] pa;
     pa = pnewa;
